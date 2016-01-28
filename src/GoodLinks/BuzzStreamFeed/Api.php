@@ -16,8 +16,7 @@ class Api
 
     public static function setConsumerKey($consumerKey)
     {
-        $a = 1;
-        // self::$consumerKey = $consumerKey;
+        self::$consumerKey = $consumerKey;
     }
 
     public static function getConsumerSecret()
