@@ -1,0 +1,13 @@
+{
+  "name": "kalenjordan/buzzstream-feed",
+  "description": "BuzzStream Feed - Share your buzzstream activity with the world",
+  "homepage": "http://goodlinks.io",
+  "license": "CC-BY-NC",
+  "authors": [
+    {
+      "name": "Kalen Jordan",
+      "email": "kalen@goodlinks.io"
+    }
+  ],
+  "require": {}
+}
