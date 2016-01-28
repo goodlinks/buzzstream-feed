@@ -1,8 +1,8 @@
 <?php
 
-namespace GoodLinks;
+namespace GoodLinks\BuzzStreamFeed;
 
-class BuzzStreamFeed
+class Api
 {
     public static $consumerKey;
     public static $consumerSecret;
@@ -16,7 +16,8 @@ class BuzzStreamFeed
 
     public static function setConsumerKey($consumerKey)
     {
-        self::$consumerKey = $consumerKey;
+        $a = 1;
+        // self::$consumerKey = $consumerKey;
     }
 
     public static function getConsumerSecret()

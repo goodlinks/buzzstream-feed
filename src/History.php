@@ -6,6 +6,8 @@ class History
 {
     public static function all()
     {
-
+        return array(
+            'key'   => Api::getConsumerKey(),
+        );
     }
 }

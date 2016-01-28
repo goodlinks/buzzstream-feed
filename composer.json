@@ -14,7 +14,7 @@
   "require": {},
   "autoload": {
       "psr-0": {
-          "GoodLinks\\BuzzStreamFeed": ["src"]
+          "GoodLinks\\BuzzStreamFeed\\": ["src"]
       }
   }
 }
