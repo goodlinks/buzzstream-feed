@@ -70,12 +70,22 @@ abstract class ApiResource
         return $response;
     }
 
+    protected function _getCache()
+    {
+        $driver = new \Stash\Driver\FileSystem();
+        $path = dirname(dirname(dirname(__DIR__))) . '/cache';
+        $driver->setOptions(array('path' => $path));
+        $pool = new \Stash\Pool($driver);
+
+        return $pool;
+    }
+
     protected function _getCachedRequest($apiResourceUrl)
     {
-        $pool = new \Stash\Pool();
-        $cacheKey = "api_resource_{$apiResourceUrl}";
+        // The slashes mean something crazy in Stash
+        $cacheKey = "api_resource_" . str_replace("/", "_", $apiResourceUrl);
 
-        $item = $pool->getItem($cacheKey);
+        $item = $this->_getCache()->getItem($cacheKey);
         $data = $item->get();
         if (! $item->isMiss()) {
             return $data;
@@ -86,10 +96,10 @@ abstract class ApiResource
 
     protected function _putCachedRequest($apiResourceUrl, $response)
     {
-        $pool = new \Stash\Pool();
-        $cacheKey = "api_resource_{$apiResourceUrl}";
+        // The slashes mean something crazy in Stash
+        $cacheKey = "api_resource_" . str_replace("/", "_", $apiResourceUrl);
 
-        $item = $pool->getItem($cacheKey);
+        $item = $this->_getCache()->getItem($cacheKey);
 
         $minutes = 5;
         $seconds = $minutes * 60;
