@@ -8,6 +8,30 @@ namespace GoodLinks\BuzzStreamFeed;
 
 abstract class ApiResource
 {
+    protected $_resourceUrl;
+
+    /**
+     * Holds the data for an api resource like a HistoryItem.
+     */
+    protected $_data;
+
+    public function __construct($resourceUrl = null)
+    {
+        if ($resourceUrl) {
+            $this->_resourceUrl = $resourceUrl;
+        }
+    }
+
+    public function getId()
+    {
+        return $this->_resourceUrl;
+    }
+
+    public function setData($data)
+    {
+        $this->_data = $data;
+    }
+
     /**
      * Override me
      */
@@ -16,27 +40,48 @@ abstract class ApiResource
         return '/';
     }
 
-    protected static function _getMaxResults()
+    public static function getList($offset = 0, $maxResults = 50)
     {
-        return 50;
-    }
+        $apiResourceModel = new static;
 
-    public static function getList($offset = 0)
-    {
-        $object = new static;
-
-        $url = Api::$apiUrl . '/' . $object->_getUrlPath();
+        $url = Api::$apiUrl . '/' . $apiResourceModel->_getUrlPath();
         $url .= '?' . http_build_query(array(
-            'offset' => $offset,
-            'max_results' => self::_getMaxResults(),
+            'offset'        => $offset,
+            'max_results'   => $maxResults,
         ));
 
-        $cachedResponse = $object->_getCachedRequest($url);
+        $cachedResponse = $apiResourceModel->_getCachedRequest($url);
         if ($cachedResponse) {
             return $cachedResponse;
         }
 
-        return $object->_request($url);
+        $objects = array();
+        $apiResponse = $apiResourceModel->_request($url);
+        foreach ($apiResponse['list'] as $resourceUrl) {
+            $objects[] = new HistoryItem($resourceUrl);
+        }
+
+        $apiResourceModel->_putCachedRequest($url, $objects);
+
+        return $objects;
+    }
+
+    public function load($resourceUrl)
+    {
+        $this->_resourceUrl = $resourceUrl;
+        $apiResourceModel = new static;
+
+        $cachedResponse = $apiResourceModel->_getCachedRequest($resourceUrl);
+        if ($cachedResponse) {
+            $this->setData($cachedResponse);
+            return $this;
+        }
+
+        $apiResponseData = $apiResourceModel->_request($resourceUrl);
+        $apiResourceModel->_putCachedRequest($resourceUrl, $apiResponseData);
+
+        $this->setData($apiResponseData);
+        return $this;
     }
 
     /**
@@ -64,10 +109,8 @@ abstract class ApiResource
         curl_close($curl);
 
         $json_response = json_decode($response, true);
-        $response = $json_response['list'];
 
-        $this->_putCachedRequest($apiResourceUrl, $response);
-        return $response;
+        return $json_response;
     }
 
     protected function _getCache()
