@@ -11,6 +11,42 @@ BuzzStream Feed pulls your activity out of your BuzzStream account in order to s
 1. For the World - Show your activity to the world with personal data fully scrubbed.  All they can see is the reputation level and relationship status of the people you're reaching out to.
 2. For Clients - Show clients your outreach activity.  They can see the names / subject lines / dates, but they can't see contents of the emails for privacy reasons.
 
+## Usage
+
+You'll want to pull the package into your project:
+
+```json
+{
+  "require": {
+      "goodlinks/buzzstream-feed": "dev-master"
+  },
+  "repositories": [
+      {
+          "type": "vcs",
+          "url": "git@github.com:goodlinks/buzzstream-feed.git"
+      }
+  ]
+}
+```
+And then from within your app, you can grab your history and display it like this:
+
+```php
+Api::setConsumerKey($consumerKey);
+Api::setConsumerSecret($consumerSecret);
+
+$history = History::getList();
+
+foreach ($history as $historyItem) {
+    $date = $historyItem->getDate();
+    $websiteUrls = $historyItem->getWebsiteNamesCsv();
+    $project = $historyItem->getProjectName();
+    
+    echo "$project - $date: $websiteUrls";
+}
+```
+
+By default, API requests will be cached for 24 hours
+
 ## License
 
 The license is currently 
