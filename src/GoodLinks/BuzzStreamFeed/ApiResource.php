@@ -31,6 +31,11 @@ abstract class ApiResource
             'max_results' => self::_getMaxResults(),
         ));
 
+        $cachedResponse = $object->_getCachedRequest($url);
+        if ($cachedResponse) {
+            return $cachedResponse;
+        }
+
         return $object->_request($url);
     }
 
@@ -40,7 +45,7 @@ abstract class ApiResource
      * @throws \OAuthException
      * @todo Replace this Oauth class from the BuzzStream docs (https://api.buzzstream.com/docs/api_doc.html#auth) with a newer Oauth component that we can composer in.
      */
-    protected static function _request($apiResourceUrl)
+    protected function _request($apiResourceUrl)
     {
         $consumer_key = Api::getConsumerKey();
         $consumer_secret = Api::getConsumerSecret();
@@ -59,6 +64,35 @@ abstract class ApiResource
         curl_close($curl);
 
         $json_response = json_decode($response, true);
-        return $json_response['list'];
+        $response = $json_response['list'];
+
+        $this->_putCachedRequest($apiResourceUrl, $response);
+        return $response;
+    }
+
+    protected function _getCachedRequest($apiResourceUrl)
+    {
+        $pool = new \Stash\Pool();
+        $cacheKey = "api_resource_{$apiResourceUrl}";
+
+        $item = $pool->getItem($cacheKey);
+        $data = $item->get();
+        if (! $item->isMiss()) {
+            return $data;
+        }
+
+        return null;
+    }
+
+    protected function _putCachedRequest($apiResourceUrl, $response)
+    {
+        $pool = new \Stash\Pool();
+        $cacheKey = "api_resource_{$apiResourceUrl}";
+
+        $item = $pool->getItem($cacheKey);
+
+        $minutes = 5;
+        $seconds = $minutes * 60;
+        $item->set($response, $seconds);
     }
 }

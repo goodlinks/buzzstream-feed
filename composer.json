@@ -11,7 +11,10 @@
       }
   ],
 
-  "require": {},
+  "require": {
+      "tedivm/stash": "0.13.*"
+  },
+
   "autoload": {
       "psr-0": {
           "GoodLinks\\BuzzStreamFeed\\": ["src"]
