@@ -52,4 +52,8 @@ By default, API requests will be cached for 24 hours
 The license is currently 
 <a href="https://tldrlegal.com/license/creative-commons-attribution-noncommercial-(cc-nc)#summary">Creative Commons Attribution NonCommercial</a>. 
 
-TL;DR is that you can modify and distribute but not for commercial use.
+TL;DR is that you can modify and distribute but not for commercial use.  Most likely if you have an
+interesting idea for commercial use, I'll be fine with it - just get in touch.  
+
+So long as you're not
+just copying and pasting this and reselling it.
