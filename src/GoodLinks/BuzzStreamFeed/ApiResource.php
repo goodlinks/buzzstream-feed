@@ -144,7 +144,8 @@ abstract class ApiResource
 
         $item = $this->_getCache()->getItem($cacheKey);
 
-        $minutes = 5;
+        $hours = 24;
+        $minutes = $hours * 60;
         $seconds = $minutes * 60;
         $item->set($response, $seconds);
     }
