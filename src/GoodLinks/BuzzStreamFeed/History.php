@@ -2,12 +2,10 @@
 
 namespace GoodLinks\BuzzStreamFeed;
 
-class History
+class History extends ApiResource
 {
-    public static function all()
+    protected static function _getUrlPath()
     {
-        return array(
-            'key'   => Api::getConsumerKey(),
-        );
+        return 'history';
     }
 }

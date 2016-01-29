@@ -7,7 +7,7 @@ class Api
     public static $consumerKey;
     public static $consumerSecret;
 
-    public static $apiUrl = 'https://api.buzzstream.com';
+    public static $apiUrl = 'https://api.buzzstream.com/v1';
 
     public static function getConsumerKey()
     {
