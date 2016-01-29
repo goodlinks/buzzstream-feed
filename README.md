@@ -2,7 +2,7 @@
 
 Show your activity feed to clients or to the world.
 
-BuzzStream Feed is brought to you by <a href="http://goodlinks.io">GoodLinks - The Content Outreach Service that Does Good</a>
+BuzzStream Feed is brought to you by <a href="http://goodlinks.io">GoodLinks - The Content Outreach Service</a>
 
 ## Overview
 
