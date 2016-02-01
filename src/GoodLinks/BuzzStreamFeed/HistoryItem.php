@@ -30,6 +30,12 @@ class HistoryItem extends ApiResource
         return $date;
     }
 
+    public function getSummary()
+    {
+        $this->load($this->_resourceUrl);
+        return $this->_data['summary'];
+    }
+
     public function getProjectName()
     {
         if (! $this->_resourceUrl) {
