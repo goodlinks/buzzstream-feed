@@ -4,7 +4,7 @@ namespace OauthClient;
 
 require_once(dirname(dirname(__DIR__)) . '/OauthClient/Oauth.php');
 
-namespace GoodLinks\BuzzStreamFeed;
+namespace Goodlinks\BuzzStreamFeed;
 
 abstract class ApiResource
 {

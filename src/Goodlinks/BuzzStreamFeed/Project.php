@@ -1,6 +1,6 @@
 <?php
 
-namespace GoodLinks\BuzzStreamFeed;
+namespace Goodlinks\BuzzStreamFeed;
 
 class Project extends ApiResource
 {
