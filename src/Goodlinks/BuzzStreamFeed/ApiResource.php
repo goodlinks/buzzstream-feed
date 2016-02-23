@@ -15,11 +15,14 @@ abstract class ApiResource
      */
     protected $_data;
 
-    public function __construct($resourceUrl = null)
+    /**
+     * @var ApiUrlBuilder
+     */
+    private $apiUrlBuilder;
+
+    public function __construct(ApiUrlBuilder $apiUrlBuilder)
     {
-        if ($resourceUrl) {
-            $this->_resourceUrl = $resourceUrl;
-        }
+        $this->apiUrlBuilder = $apiUrlBuilder;
     }
 
     public function getId()
@@ -40,28 +43,22 @@ abstract class ApiResource
         return '/';
     }
 
-    public static function getList($offset = 0, $maxResults = 50)
+    public function getList($offset = 0, $maxResults = 50)
     {
-        $apiResourceModel = new static;
+        $url = $this->apiUrlBuilder->buildUrl($this->_getUrlPath(), $offset, $maxResults);
 
-        $url = Api::$apiUrl . '/' . $apiResourceModel->_getUrlPath();
-        $url .= '?' . http_build_query(array(
-            'offset'        => $offset,
-            'max_results'   => $maxResults,
-        ));
-
-        $cachedResponse = $apiResourceModel->_getCachedRequest($url);
+        $cachedResponse = $this->_getCachedRequest($url);
         if ($cachedResponse) {
             return $cachedResponse;
         }
 
         $objects = array();
-        $apiResponse = $apiResourceModel->_request($url);
+        $apiResponse = $this->_request($url);
         foreach ($apiResponse['list'] as $resourceUrl) {
             $objects[] = new HistoryItem($resourceUrl);
         }
 
-        $apiResourceModel->_putCachedRequest($url, $objects);
+        $this->_putCachedRequest($url, $objects);
 
         return $objects;
     }
