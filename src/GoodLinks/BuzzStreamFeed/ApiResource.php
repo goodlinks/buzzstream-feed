@@ -24,6 +24,11 @@ abstract class ApiResource
 
     public function getId()
     {
+        return $this->_data['id'];
+    }
+
+    public function getResourceUrl()
+    {
         return $this->_resourceUrl;
     }
 
@@ -40,15 +45,32 @@ abstract class ApiResource
         return '/';
     }
 
-    public static function getList($offset = 0, $maxResults = 50)
+    /**
+     * @param null $chronicleDateBefore
+     * @param null $chronicleDateAfter
+     * @param int $offset
+     * @param int $maxResults
+     * @return HistoryItem[]
+     */
+    public static function getList($chronicleDateAfter = null, $chronicleDateBefore = null, $offset = 0, $maxResults = 50)
     {
         $apiResourceModel = new static;
 
-        $url = Api::$apiUrl . '/' . $apiResourceModel->_getUrlPath();
-        $url .= '?' . http_build_query(array(
+        $params = array(
             'offset'        => $offset,
             'max_results'   => $maxResults,
-        ));
+        );
+
+        if ($chronicleDateAfter) {
+            $params['created_after_internal_date'] = $chronicleDateAfter;
+        }
+
+        if ($chronicleDateBefore) {
+            $params['created_before_internal_date'] = $chronicleDateBefore;
+        }
+
+        $url = Api::$apiUrl . '/' . $apiResourceModel->_getUrlPath();
+        $url .= '?' . http_build_query($params);
 
         $cachedResponse = $apiResourceModel->_getCachedRequest($url);
         if ($cachedResponse) {

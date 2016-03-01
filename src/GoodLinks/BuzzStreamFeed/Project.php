@@ -13,4 +13,10 @@ class Project extends ApiResource
         $this->load($this->_resourceUrl);
         return $this->_data['name'];
     }
+
+    public function fetchHistory()
+    {
+        $history = History::getList($this->getId());;
+        return $history;
+    }
 }
