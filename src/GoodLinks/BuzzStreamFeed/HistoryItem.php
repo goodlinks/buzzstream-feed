@@ -24,14 +24,15 @@ class HistoryItem extends ApiResource
         return implode(", ", $names);
     }
 
-    public function isInProject($buzzstreamProjectUrl)
+    public function getBuzzstreamProjectIds()
     {
         if (! $this->_resourceUrl) {
-            throw new \Exception("Can't getWebsiteUrl() because resourceUrl not set on this HistoryItem object");
+            throw new \Exception("Can't getBuzzstreamProjectIds() because resourceUrl not set on this HistoryItem object");
         }
 
         $this->load($this->_resourceUrl);
         $websites = array();
+        $projectIds = array();
 
         foreach ($this->_data['associatedWebsites'] as $websiteResourceUrl) {
             $website = new Website();
@@ -42,14 +43,31 @@ class HistoryItem extends ApiResource
                 $projectStates->load($website->_data['projectStates']);
 
                 foreach ($projectStates->_data as $projectStateData) {
-                    if ($projectStateData['project'] == $buzzstreamProjectUrl) {
-                        return true;
-                    }
+                    $projectId = $this->_resourceUrlToId($projectStateData['project']);
+                    $projectIds[] = $projectId;
+                    $projectIds = array_unique($projectIds);
                 }
             }
         }
 
-        return false;
+        return $projectIds;
+    }
+
+    public function getBuzzstreamWebsiteIds()
+    {
+        if (! $this->_resourceUrl) {
+            throw new \Exception("Can't getBuzzstreamWebsiteIds() because resourceUrl not set on this HistoryItem object");
+        }
+
+        $this->load($this->_resourceUrl);
+        $websiteIds = array();
+
+        foreach ($this->_data['associatedWebsites'] as $websiteResourceUrl) {
+            $websiteId = $this->_resourceUrlToId($websiteResourceUrl);
+            $websiteIds[] = $websiteId;
+        }
+
+        return $websiteIds;
     }
 
     public function getAvatarUrl()
@@ -112,9 +130,14 @@ class HistoryItem extends ApiResource
     public function getBuzzstreamId()
     {
         $apiUrl = $this->getResourceUrl();
-        $parts = explode("/", $apiUrl);
+        return $this->_resourceUrlToId($apiUrl);
+    }
+
+    protected function _resourceUrlToId($url)
+    {
+        $parts = explode("/", $url);
         if (empty($parts)) {
-            throw new \Exception("Problem parsing api url for history item: $apiUrl");
+            throw new \Exception("Problem parsing api url for history item: $url");
         }
 
         return $parts[count($parts) - 1];
