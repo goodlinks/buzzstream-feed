@@ -26,8 +26,6 @@ class HistoryItem extends ApiResource
 
     public function isInProject($buzzstreamProjectUrl)
     {
-        $names = array();
-
         if (! $this->_resourceUrl) {
             throw new \Exception("Can't getWebsiteUrl() because resourceUrl not set on this HistoryItem object");
         }
@@ -84,6 +82,10 @@ class HistoryItem extends ApiResource
     public function getSummary()
     {
         $this->load($this->_resourceUrl);
+        if ($this->_data['type'] == 'Tweet' && substr($this->_data['summary'], 0, 2) == 'DM') {
+            return "Direct Message (Contents Private)";
+        }
+
         return $this->_data['summary'];
     }
 
@@ -91,6 +93,31 @@ class HistoryItem extends ApiResource
     {
         $this->load($this->_resourceUrl);
         return $this->_data['uri'];
+    }
+
+    public function getCreatedAt()
+    {
+        $this->load($this->_resourceUrl);
+        $date = date("Y-m-d G:i:s", $this->_data['createdDate'] / 1000);
+
+        return $date;
+    }
+
+    public function getType()
+    {
+        $this->load($this->_resourceUrl);
+        return $this->_data['type'];
+    }
+
+    public function getBuzzstreamId()
+    {
+        $apiUrl = $this->getResourceUrl();
+        $parts = explode("/", $apiUrl);
+        if (empty($parts)) {
+            throw new \Exception("Problem parsing api url for history item: $apiUrl");
+        }
+
+        return $parts[count($parts) - 1];
     }
 
     public function getProjectName()

@@ -83,7 +83,7 @@ abstract class ApiResource
             $objects[] = new HistoryItem($resourceUrl);
         }
 
-        $apiResourceModel->_putCachedRequest($url, $objects);
+        $apiResourceModel->_putCachedRequest($url, $objects, 0.1);
 
         return $objects;
     }
@@ -94,13 +94,13 @@ abstract class ApiResource
         $apiResourceModel = new static;
 
         $cachedResponse = $apiResourceModel->_getCachedRequest($resourceUrl);
-        if ($cachedResponse) {
+        if ($cachedResponse !== null) {
             $this->setData($cachedResponse);
             return $this;
         }
 
         $apiResponseData = $apiResourceModel->_request($resourceUrl);
-        $apiResourceModel->_putCachedRequest($resourceUrl, $apiResponseData);
+        $apiResourceModel->_putCachedRequest($resourceUrl, $apiResponseData, 30);
 
         $this->setData($apiResponseData);
         return $this;
@@ -159,14 +159,14 @@ abstract class ApiResource
         return null;
     }
 
-    protected function _putCachedRequest($apiResourceUrl, $response)
+    protected function _putCachedRequest($apiResourceUrl, $response, $cacheLifetimeInDays = 1)
     {
         // The slashes mean something crazy in Stash
         $cacheKey = "api_resource_" . str_replace("/", "_", $apiResourceUrl);
 
         $item = $this->_getCache()->getItem($cacheKey);
 
-        $hours = 24;
+        $hours = $cacheLifetimeInDays * 24;
         $minutes = $hours * 60;
         $seconds = $minutes * 60;
         $item->set($response, $seconds);
