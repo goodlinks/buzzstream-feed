@@ -86,7 +86,7 @@ class HistoryItem extends ApiResource
             }
         }
 
-        return "http://style.anu.edu.au/_anu/4/images/placeholders/person.png";
+        return "https://app.buzzstream.com/img/default_avatar_media.png";
     }
 
     public function getDate()
@@ -100,11 +100,13 @@ class HistoryItem extends ApiResource
     public function getSummary()
     {
         $this->load($this->_resourceUrl);
-        if ($this->_data['type'] == 'Tweet' && substr($this->_data['summary'], 0, 2) == 'DM') {
-            return "Direct Message (Contents Private)";
-        }
-
         return $this->_data['summary'];
+    }
+
+    public function getBody()
+    {
+        $this->load($this->_resourceUrl);
+        return $this->_data['body'];
     }
 
     public function getHistoryItemApiUrl()

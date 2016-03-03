@@ -20,11 +20,18 @@ class Website extends ApiResource
             foreach ($this->_data['socialNetworks'] as $socialNetworkData) {
                 if ($socialNetworkData['name'] == 'Twitter') {
                     $twitterUsername = $socialNetworkData['profileUrl'];
+
+                    // Sometimes the Twitter username field contains the full URL
+                    if (strpos($twitterUsername, "twitter.com") !== false) {
+                        $parts = explode("/", $twitterUsername);
+                        $twitterUsername = $parts[count($parts) - 1];
+                    }
+
                     return "https://app.buzzstream.com/twitterAvatar?id=$twitterUsername&h=24&w=24";
                 }
             }
         }
 
-        return "http://style.anu.edu.au/_anu/4/images/placeholders/person.png";
+        return "https://app.buzzstream.com/img/default_avatar_media.png";
     }
 }
