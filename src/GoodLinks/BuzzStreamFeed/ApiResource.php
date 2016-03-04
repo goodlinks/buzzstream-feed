@@ -72,7 +72,12 @@ abstract class ApiResource
         $url = Api::$apiUrl . '/' . $apiResourceModel->_getUrlPath();
         $url .= '?' . http_build_query($params);
 
-        $cachedResponse = $apiResourceModel->_getCachedRequest($url);
+        // Disable caching by default for lists - otherwise grabbing the history item
+        // list is always out of date.
+        // @todo clean this up / refactor
+        // $cachedResponse = $apiResourceModel->_getCachedRequest($url);
+        $cachedResponse = false;
+        
         if ($cachedResponse) {
             return $cachedResponse;
         }

@@ -37,7 +37,7 @@ class HistoryItem extends ApiResource
         foreach ($this->_data['associatedWebsites'] as $websiteResourceUrl) {
             $website = new Website();
             $website->load($websiteResourceUrl);
-            $websites[] = $website;
+
             if ($website->_data['projectStates']) {
                 $projectStates = new ProjectStates();
                 $projectStates->load($website->_data['projectStates']);
