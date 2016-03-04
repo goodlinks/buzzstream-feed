@@ -77,7 +77,7 @@ abstract class ApiResource
         // @todo clean this up / refactor
         // $cachedResponse = $apiResourceModel->_getCachedRequest($url);
         $cachedResponse = false;
-        
+
         if ($cachedResponse) {
             return $cachedResponse;
         }

@@ -31,8 +31,18 @@ class HistoryItem extends ApiResource
         }
 
         $this->load($this->_resourceUrl);
-        $websites = array();
         $projectIds = array();
+
+        /**
+         * Relationship Stage changes and Notes should only be associated to the project they
+         * belong to.  But things like emails and tweets get associated to any project
+         * that the website is in
+         */
+        if (in_array($this->getType(), array('Stage', 'Note'))) {
+            $projectUrl = $this->_data['project'];
+            $projectId = $this->_resourceUrlToId($projectUrl);
+            return array($projectId);
+        }
 
         foreach ($this->_data['associatedWebsites'] as $websiteResourceUrl) {
             $website = new Website();
