@@ -80,6 +80,19 @@ class HistoryItem extends ApiResource
         return $websiteIds;
     }
 
+    public function getBuzzstreamOwnerId()
+    {
+        if (! $this->_resourceUrl) {
+            throw new \Exception("Can't getBuzzstreamOwnerId() because resourceUrl not set on this HistoryItem object");
+        }
+
+        $this->load($this->_resourceUrl);
+        $ownerApiUrl = $this->_data['owner'];
+
+        $buzzStreamUserId =  $this->_resourceUrlToId($ownerApiUrl);
+        return $buzzStreamUserId;
+    }
+
     public function getAvatarUrl()
     {
         if (! $this->_resourceUrl) {
