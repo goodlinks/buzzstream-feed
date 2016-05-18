@@ -84,6 +84,10 @@ abstract class ApiResource
 
         $objects = array();
         $apiResponse = $apiResourceModel->_request($url);
+        if (! isset($apiResponse['list'])) {
+            throw new \Exception("No 'list' found for URL ($url): " . print_r($apiResponse, 1));
+        }
+
         foreach ($apiResponse['list'] as $resourceUrl) {
             $objects[] = new HistoryItem($resourceUrl);
         }
@@ -136,6 +140,13 @@ abstract class ApiResource
         curl_close($curl);
 
         $json_response = json_decode($response, true);
+        if (! is_array($json_response)) {
+            throw new \Exception("JSON response is not an array as expected");
+        }
+
+        if (isset($json_response['message'])) {
+            throw new \Exception($json_response['message']);
+        }
 
         return $json_response;
     }
