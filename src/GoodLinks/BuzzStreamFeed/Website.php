@@ -4,6 +4,11 @@ namespace GoodLinks\BuzzStreamFeed;
 
 class Website extends ApiResource
 {
+    protected static function _getUrlPath()
+    {
+        return 'websites';
+    }
+
     public function getUrl()
     {
         if (! $this->_resourceUrl) {
@@ -33,5 +38,15 @@ class Website extends ApiResource
         }
 
         return "https://app.buzzstream.com/img/default_avatar_media.png";
+    }
+
+    public function getLastCommunicationDate()
+    {
+        if (! isset($this->_data['lastCommunicationDate'])) {
+            return null;
+        }
+
+        $date = date("Y-m-d", $this->_data['lastCommunicationDate'] / 1000);
+        return $date;
     }
 }
